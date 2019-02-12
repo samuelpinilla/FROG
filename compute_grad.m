@@ -14,5 +14,6 @@ function grad = compute_grad(z, u, y, Params,i)
     
     Az   = fftshift(fft(FROG_signal_B(z,L,N,fi)),1);
     yz   = sqrt(abs(Az).^2+u^2);
-    grad = 4*sum(conj(zf).*ifft(fftshift(((yz-ysub)./yz).*Az,1)),2)*N/batch;
+    aa   = max(max(yz),1);
+    grad = 4*sum(conj(zf).*ifft(fftshift(((yz-ysub)./yz).*Az,1)),2)*N/(aa*batch);
 end
