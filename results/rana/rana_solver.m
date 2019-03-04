@@ -1,4 +1,4 @@
-function [z,er] = rana_solver(x,x0,L,SNR)
+function [z,er] = rana_solver(x,x0,L,SNR,filter)
 %% variables
 [N,~] = size(x);
 
@@ -18,7 +18,7 @@ else
 end
 
 if isempty(x0)
-    z  = init_rana(Ynoisy.^2,x);
+    z  = init_rana(Ynoisy.^2,filter);
 else
     z = x0;
 end
