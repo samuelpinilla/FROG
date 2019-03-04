@@ -1,4 +1,4 @@
-function [z_r,error_r] = proc_rana(x,L,SNR)
+function [z_r,error_r] = proc_rana(x,L,SNR,filter)
 
     [N,n2] = size(x);
 
@@ -22,7 +22,7 @@ function [z_r,error_r] = proc_rana(x,L,SNR)
        Ynoisy = y;
     end
 
-    z_r      = init_rana(Ynoisy.^2);
+    z_r      = init_rana(Ynoisy.^2,filter);
     error_r  = norm(Ynoisy-abs(A(z_r)),'fro')/norm(Ynoisy,'fro');
     z_r      = best_sol(z_r, x);
 
