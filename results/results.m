@@ -1,6 +1,7 @@
 clc;
 clear;
 close all;
+clear classes;
 
 addpath(genpath('smoothing'));
 addpath(genpath('ptych'));
@@ -18,7 +19,7 @@ for t = 1:length(pp)
     x = pulse_set(pp(t),:).';
     [z_s,~,~,~] = smoothing_solver(x,[],1,SNR);
     [z_p,~]     = pytch_solver(x,[],1,SNR);
-    [z_r,~]     = rana_solver(x,[],1,SNR);
+    [z_r,~]     = rana_solver(x,[],1,SNR,0);
 
     subplot(length(pp),2,length(pp)*(t-1)+1),plot(time*1e15,abs(x),time*1e15,abs(z_s),time*1e15,abs(z_p),time*1e15,abs(z_r)),...
         title('Reconstructed magnitud'), xlabel('Time [fsec]','FontSize',16); ylabel('Amplitude','FontSize',16);
@@ -34,7 +35,7 @@ for t=1:length(L)
     x = pulse_set(2,:).';
     [z_s,~,~,A1] = smoothing_solver(x,[],L(t),SNR);
     [z_p,~]      = pytch_solver(x,[],L(t),SNR);
-    [z_r,~]      = rana_solver(x,[],L(t),SNR);
+    [z_r,~]      = rana_solver(x,[],L(t),SNR,1);
 
     subplot(length(L),3,length(L)*(t-1)+1),imagesc(abs(A1(z_p))),title('Pytch'),xlabel('Time [fsec]','FontSize',16);
     subplot(length(L),3,length(L)*(t-1)+2),imagesc(abs(A1(z_r))),title('RANA'),xlabel('Time [fsec]','FontSize',16);
@@ -48,7 +49,7 @@ for t=1:length(L)
     x = pulse_set(2,:).';
     [z_s,~,~,A1] = smoothing_solver(x,[],L(t),SNR);
     [z_p,~]      = pytch_solver(x,[],L(t),SNR);
-    [z_r,~]      = rana_solver(x,[],L(t),SNR);
+    [z_r,~]      = rana_solver(x,[],L(t),SNR,1);
 
     subplot(length(L),2,2*(t-1)+1),plot(time*1e15,abs(x),time*1e15,abs(z_s),time*1e15,abs(z_p),time*1e15,abs(z_r)),...
         title('Reconstructed magnitud'),xlabel('Time [fsec]','FontSize',16); ylabel('Amplitude','FontSize',16);
@@ -73,7 +74,7 @@ for t=1:length(L)
             x0  = x + del*randsrc(1,1,[-1,1]);
             [~,error_s,~,~] = smoothing_solver(x,x0,L(t),SNR);
             [~,error_p]     = pytch_solver(x,x0,L(t),SNR);
-            [~,error_r]     = rana_solver(x,x0,L(t),SNR);
+            [~,error_r]     = rana_solver(x,x0,L(t),SNR,0);
             [~,error_pg]    = PCPG_sol(x,x0,L(t),SNR);
 
             if min(error_s(error_s>0))<=1e-6
@@ -114,7 +115,7 @@ for t=1:length(L)
     x = pulse_set(2,:).';
     for it=1:100
         [~,~,error_s,error_p] = smoothing_init(x,L(t),SNR);
-        [~,error_r]           = proc_rana(x,L(t),SNR);
+        [~,error_r]           = proc_rana(x,L(t),SNR,0);
         ferror_s(t) = ferror_s(t) + error_s;
         ferror_p(t) = ferror_p(t) + error_p;
         ferror_r(t) = ferror_r(t) + error_r;
@@ -129,7 +130,7 @@ L   = 4;
 SNR = 0;
 x   = pulse_set(2,:).';
 [z_s,z_p,~,~] = smoothing_init(x,L,SNR);
-[z_r,~]       = proc_rana(x,L,SNR);
+[z_r,~]       = proc_rana(x,L,SNR,0);
 
 [z_s,~,~,~] = smoothing_solver(x,z_s,L,SNR);
 [z_p,~,~,~] = smoothing_solver(x,z_p,L,SNR);
