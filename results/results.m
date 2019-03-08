@@ -49,7 +49,7 @@ for t=1:length(L)
     subplot(length(L),2,2*(t-1)+1),plot(time*1e15,abs(x),time*1e15,abs(z_s),time*1e15,abs(z_p)),...
         title('Reconstructed magnitud'),xlabel('Time [fsec]','FontSize',16); ylabel('Amplitude','FontSize',16);
     subplot(length(L),2,2*(t-1)+2),plot(time*1e15,unwrap(angle(x)),time*1e15,unwrap(angle(z_s)),...
-        time*1e15,unwrap(angle(z_p)))), title('Reconstructed phase'),xlabel('Time [fsec]','FontSize',16); ylabel('Phase','FontSize',16);
+        time*1e15,unwrap(angle(z_p))), title('Reconstructed phase'),xlabel('Time [fsec]','FontSize',16); ylabel('Phase','FontSize',16);
 end
 
 %% Fig. 4
