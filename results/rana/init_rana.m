@@ -1,43 +1,47 @@
-function x0 = init_rana(Y)
-    %% initialization
-    N       = size(Y,1);
-    g       = sum(Y,2);
-    
-    s = sqrt(fftshift(ifft(g))*sqrt(N));
-    s = s/norm(s,'fro');
-    
-    %% variables
-    alpha = 0.09;
-    beta  = 0.425;
-    gamma = 1;
-    
-    for t=2:N
-        
-        term1p = alpha*abs(s(t)-s(t-1))^2;
-        term1n = alpha*abs(-s(t)-s(t-1))^2;
-        
-        if t-2 <= 0
-            term2p = 0;
-            term2n = 0;
-        else
-            term2p = beta*abs(s(t)-s(t-1)-(s(t-1)-s(t-2)))^2;
-            term2n = beta*abs(-s(t)-s(t-1)-(s(t-1)-s(t-2)))^2;
-        end
-        
-        if t-3 <= 0
-            term3p = 0;
-            term3n = 0;
-        else
-            term3p = gamma*abs(s(t)-s(t-1)-(s(t-1)-s(t-2)) - (s(t-1)-s(t-2)-(s(t-2)-s(t-3))))^2;
-            term3n = gamma*abs(-s(t)-s(t-1)-(s(t-1)-s(t-2)) - (s(t-1)-s(t-2)-(s(t-2)-s(t-3))))^2;
-        end
-        
-        epsilon1 = term1p + term2p + term3p;
-        epsilon2 = term1n + term2n + term3n;
-        
-        if epsilon1 > epsilon2
-            s(t) = -s(t);
-        end
-    end
-    x0 = fft(fftshift(s))/sqrt(N);
+function [z,er] = rana_solver(x,x0,L,SNR)
+%% variables
+[N,~] = size(x);
+
+A  = @(I) fftshift(fft(FROG_signal(I,1,N)),1);       % propagation operator
+
+%% Make signal and data (noiseless)
+
+y     = abs(A(x));
+ind_L = 1:L:N;
+
+if SNR >0
+    aux = awgn(y,SNR,'measured');
+    Ynoisy = zeros(size(y));
+    Ynoisy(:,ind_L) = aux(:,ind_L);
+else
+    Ynoisy = y;
+end
+
+if isempty(x0)
+    z  = init_rana(Ynoisy.^2);
+    z  = z.';
+else
+    z = x0;
+end
+
+error   = norm(y-abs(A(z)),'fro')/norm(y,'fro');
+fprintf('Iter = 0  Error = %f \n', error);
+
+z = z.';
+
+tic
+[~,z,er] = ispecshg(Ynoisy,z,z,A,300);
+toc
+
+z  = best_sol(z.', x);
+
+%% plots
+% T = length(er);
+% 
+% figure;
+% subplot(2,2,1);imagesc(y),title('Simulated trace');
+% subplot(2,2,2);imagesc(abs(A(z))),title('Reconstructed trace');
+% subplot(2,2,3);plot(time,abs(x),time,abs(z)),title('Reconstructed amplitude');
+% subplot(2,2,4);plot(time*1e15,unwrap(angle(x))/pi,time*1e15,unwrap(angle(z))/pi),title('Reconstructed phase');
+
 end
