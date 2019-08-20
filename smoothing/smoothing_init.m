@@ -21,7 +21,8 @@ function [z_s,error_s] = smoothing_init(x,L,SNR,ss)
     else
         Ynoisy = y;
     end
-
+    
+    fprintf('simulated snr = %f\n',snr(y,y-Ynoisy));
 
     z_s        = init(Ynoisy,Params.L);
     error_s    = norm(sqrt(Ynoisy)-abs(A(z_s)),'fro')/norm(sqrt(Ynoisy),'fro');
