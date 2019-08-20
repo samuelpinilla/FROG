@@ -28,12 +28,7 @@ function [ObjB,error] = pytch_solver(x,x0,L,SNR,ss)
     ind_L = 1:L:N;
     
     if SNR > 0
-        rng(ss.Seed,ss.Type);
-        alpha  = 0.1;
-        m      = randn(size(I));
-        hh     = 1 + m*alpha;
-        I      = I.*hh;
-        fprintf('simulated snr = %f\n',snr(I,I.*m.*alpha));
+        I = awgn(I,20,'measured',ss);
         
         Inoisy = I(:,ind_L);
         
