@@ -18,8 +18,6 @@ function [z_p,error_p] = pytch_init(x,L,SNR,ss)
     y  = abs(A(x)).^2;
     Y  = zeros(N,N);
     
-    rng(ss.Seed,ss.Type);
-    
     if SNR
         Ynoisy = awgn(y,SNR,'measured',ss);
         
