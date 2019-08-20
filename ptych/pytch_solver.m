@@ -28,7 +28,7 @@ function [ObjB,error] = pytch_solver(x,x0,L,SNR,ss)
     ind_L = 1:L:N;
     
     if SNR > 0
-        I = awgn(I,20,'measured',ss);
+        I = awgn(I,SNR,'measured',ss);
         
         Inoisy = I(:,ind_L);
         
