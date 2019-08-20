@@ -21,11 +21,7 @@ function [z_p,error_p] = pytch_init(x,L,SNR,ss)
     rng(ss.Seed,ss.Type);
     
     if SNR
-        alpha  = 0.1;
-        m      = randn(size(y));
-        hh     = 1+m*alpha;
-        Ynoisy = y.*hh;
-        fprintf('simulated snr = %f\n',snr(y,y.*m.*alpha));
+        Ynoisy = awgn(y,SNR,'measured',ss);
         
         for ii=1:size(Ynoisy,1)
             Y(ii,:) = interp1(1:L:N, Ynoisy(ii,:), 1:N, 'pchip');
