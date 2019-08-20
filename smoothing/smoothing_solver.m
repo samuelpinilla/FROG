@@ -26,14 +26,9 @@ function [z,error,A,A1] = smoothing_solver(x,x0,L,SNR,ss)
 
     %% Make signal and data (noiseless)
     y      = abs(A(x)).^2;
-    rng(ss.Seed,ss.Type); % for reproducibility
-    
+        
     if SNR
-        alpha  = 0.1;
-        m      = randn(size(y));
-        hh     = 1+m*alpha;
-        Ynoisy = y.*hh;
-        fprintf('simulated snr = %f\n',snr(y,y.*m.*alpha));
+        Ynoisy = awgn(y,SNR,'measured',ss);
     else
         Ynoisy = y;
     end
