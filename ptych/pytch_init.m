@@ -32,6 +32,8 @@ function [z_p,error_p] = pytch_init(x,L,SNR,ss)
         end
         Ynoisy = sqrt(Y.*(Y>=0));
     end
+    
+    fprintf('simulated snr = %f\n',snr(y,y-Y));
 
     z_p        = sum(Ynoisy,1)'/sqrt(sum(sum(abs( sum(Ynoisy,1) ).^2)));
     error_p    = norm(Ynoisy-abs(B(z_p)),'fro')/norm(Ynoisy,'fro');
