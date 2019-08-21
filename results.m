@@ -121,12 +121,15 @@ L   = [1,2,4,6];
 SNR = 0;
 
 iter     = zeros(length(L),1);
+iter_p   = zeros(length(L),1);
+
 time_s   = zeros(length(L),1);
 time_p   = zeros(length(L),1);
 
 iter_r   = zeros(length(L),1);
 prob_sr  = zeros(length(L),1);
 prob_s   = zeros(length(L),1);
+prob_p   = zeros(length(L),1);
 
 cr       = zeros(length(L),1);
 
