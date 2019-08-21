@@ -68,12 +68,14 @@ function [ObjB,error] = pytch_solver(x,x0,L,SNR,ss)
         flag = error(find(error, 1, 'last'))<1e-3;
         if flag
             ObjB = best_sol(Obj, ref);
+            ObjB   = exp(-1i * angle(trace(x' * ObjB)))*ObjB;
             Aerror = acos(abs(ObjB'*ref)/sqrt( (ObjB'*ObjB)*(ref'*ref) ));
             break
         end
         if Terror > error(find(error, 1, 'last'))
             Terror = error(find(error, 1, 'last'));
             ObjB = best_sol(Obj, conj(pulse'));
+            ObjB   = exp(-1i * angle(trace(x' * ObjB)))*ObjB;
             Aerror = acos(abs(ObjB'*ref)/sqrt( (ObjB'*ObjB)*(ref'*ref) ));
         end
     end
