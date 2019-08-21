@@ -39,4 +39,5 @@ function [z,error,A,A1] = smoothing_solver(x,x0,L,SNR,ss)
     [z,error] = solver(Ynoisy,x,x0,Params, A,1e-6);
     toc
     z      = best_sol(z, x);
+    z  = exp(-1i * angle(trace(x' * z)))*z;
 end
