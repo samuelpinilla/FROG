@@ -119,12 +119,14 @@ end
 %% Fig. 9
 L   = [1,2,4,6];
 SNR = 0;
-prob_s   = zeros(length(L),1);
+
 iter     = zeros(length(L),1);
 time_s   = zeros(length(L),1);
+time_p   = zeros(length(L),1);
 
 iter_r   = zeros(length(L),1);
 prob_sr  = zeros(length(L),1);
+prob_s   = zeros(length(L),1);
 
 cr       = zeros(length(L),1);
 
@@ -138,6 +140,9 @@ for ll=1:length(L)
         
         time_s(ll) = time_s(ll) +  toc;
         
+        tic
+        [~,error_p]  = pytch_solver(x,[],L(ll),SNR,ss);
+        time_p(ll)   = time_p(ll) + toc;
        
         [~,error_sr,~,~] = smoothing_solver(x,x0,L(ll),SNR,ss);
         
@@ -145,6 +150,11 @@ for ll=1:length(L)
         if min(error_s(error_s>0))<=1e-6
             prob_s(ll) = prob_s(ll) + 1;
             iter(ll)   = iter(ll) + length(error_s);
+        end
+        
+        if min(error_p(error_p>0))<=1e-6
+            prob_p(ll) = prob_p(ll) + 1;
+            iter_p(ll) = iter_p(ll) + length(find(error_p));
         end
         
         if min(error_sr(error_sr>0))<=1e-6
@@ -158,6 +168,9 @@ end
 fprintf('number iterations designed = %f\n',iter(1)/100);
 fprintf('number iterations random = %f\n',iter(1)/cr(1));
 fprintf('time smoothing = %f\n',time_s(1)/100);
+
+fprintf('time pytch = %f\n',time_p(1)/prob_p(1));
+fprintf('number iterations pytch = %f\n',iter_p(1)/prob_p(1));
 
 figure;
 plot(L,prob_s/100),title('Proposed'),...
