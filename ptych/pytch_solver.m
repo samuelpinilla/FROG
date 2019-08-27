@@ -30,21 +30,11 @@ function [ObjB,error] = pytch_solver(x,x0,L,SNR,ss)
     if SNR > 0       
         aux    = I(:,ind_L);
         Inoisy = awgn(aux,SNR,'measured',ss);
-        
-        for ii=1:size(Inoisy,1)
-            I(ii,:) = interp1(1:L:N, Inoisy(ii,:), 1:N, 'pchip');
-        end
-        
-        Inoisy = sqrt(I.*(I>=0));
+        Inoisy = sqrt(Inoisy.*(Inoisy>=0));
         
     else
         Inoisy = I(:,ind_L);
-        
-        for ii=1:size(Inoisy,1)
-            I(ii,:) = interp1(1:L:N, Inoisy(ii,:), 1:N, 'pchip');
-        end
-        
-        Inoisy = sqrt(I.*(I>=0));
+        Inoisy = sqrt(Inoisy.*(Inoisy>=0));
     end
 
     if LPF_flag
@@ -52,9 +42,8 @@ function [ObjB,error] = pytch_solver(x,x0,L,SNR,ss)
     else
         Fsupp = logical(ones(size(F)))';
     end
-    LPF = kron(ones(1,N), fftshift(Fsupp));
-    InoisyLPF = Inoisy.*LPF;
-    etta = sum(Fsupp)/N;
+    
+    InoisyLPF = Inoisy;
 
     ref = conj(pulse');
     Terror = inf;
