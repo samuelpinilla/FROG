@@ -134,6 +134,8 @@ prob_s1   = zeros(length(L),1);
 for ll=1:length(L)
     for t=1:100
         x = pulse_set(t,:).';
+        
+        rng(ss1.Seed,ss1.Type);
         x0 = randn(size(x)) +  1i*randn(size(x));
         
         tic
@@ -152,10 +154,10 @@ for ll=1:length(L)
             iter(ll)   = iter(ll) + length(error_s);
         end
         
-                if min(error_s1(error_s1>0))<=1e-6
-                    prob_s1(ll) = prob_s1(ll) + 1;
-                    iter_s1(ll) = iter_s1(ll) + length(error_s1);
-                end
+        if min(error_s1(error_s1>0))<=1e-6
+            prob_s1(ll) = prob_s1(ll) + 1;
+            iter_s1(ll) = iter_s1(ll) + length(error_s1);
+        end
                 
         if min(error_sr(error_sr>0))<=1e-6
             prob_sr(ll) = prob_sr(ll) + 1;
@@ -170,9 +172,8 @@ fprintf('number iterations ptych = %f for L = %f\n',iter_s1(1)/prob_s1(1),L(1));
 fprintf('time smoothing = %f for L = %f\n',time_s(1)/prob_s(1),L(1));
 
 figure;
-plot(L,prob_s/100),title('Proposed'),...
+plot(L,prob_s/100,L,prob_sr/100,L,prob_s1/100),title('Proposed'),...
     xlabel('L','FontSize',16); ylabel('success rate','FontSize',16);
-
 
 %% Fig. 6
 L   = 1:1:8;
