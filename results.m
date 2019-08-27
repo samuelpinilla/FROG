@@ -41,7 +41,7 @@ for t = 1:length(pp)
 end
 
 %% Fig. 2
-pp = [8,1];
+pp = [8,3];
 SNR = 20;
 figure;
 
@@ -76,7 +76,7 @@ L   = [2,4,8];
 SNR = 20;
 figure;
 for t=1:length(L)
-    x = pulse_set(2,:).';
+    x = pulse_set(39,:).';
     [z_s,~,~,A1] = smoothing_solver(x,[],L(t),SNR,ss);
     [z_p,~]      = pytch_solver(x,[],L(t),SNR,ss);
 
@@ -107,7 +107,7 @@ L   = [2,4,8];
 SNR = 20;
 figure;
 for t=1:length(L)
-    x = pulse_set(2,:).';
+    x = pulse_set(39,:).';
     [z_s,~,~,A1]   = smoothing_solver(x,[],L(t),SNR,ss);
     [z_p,~]        = pytch_solver(x,[],L(t),SNR,ss);
 
@@ -121,14 +121,15 @@ L   = [1,2,4,6];
 SNR = 0;
 
 iter     = zeros(length(L),1);
+iter_s1   = zeros(length(L),1);
 
 time_s   = zeros(length(L),1);
 
 iter_r   = zeros(length(L),1);
 prob_sr  = zeros(length(L),1);
 prob_s   = zeros(length(L),1);
+prob_s1   = zeros(length(L),1);
 
-cr       = zeros(length(L),1);
 
 for ll=1:length(L)
     for t=1:100
@@ -139,26 +140,34 @@ for ll=1:length(L)
         [~,error_s,~,~]  = smoothing_solver(x,[],L(ll),SNR,ss);
         
         time_s(ll) = time_s(ll) +  toc;
-              
+        
         [~,error_sr,~,~] = smoothing_solver(x,x0,L(ll),SNR,ss);
         
+        [z_p,~] = pytch_init(x,L(ll),SNR,ss);
+        
+                [~,error_s1,~,~] = smoothing_solver(x,z_p,L(ll),SNR,ss);
         
         if min(error_s(error_s>0))<=1e-6
             prob_s(ll) = prob_s(ll) + 1;
             iter(ll)   = iter(ll) + length(error_s);
         end
+        
+                if min(error_s1(error_s1>0))<=1e-6
+                    prob_s1(ll) = prob_s1(ll) + 1;
+                    iter_s1(ll) = iter_s1(ll) + length(error_s1);
+                end
                 
         if min(error_sr(error_sr>0))<=1e-6
-            cr(ll) = cr(ll) + 1;
             prob_sr(ll) = prob_sr(ll) + 1;
             iter_r(ll)   = iter_r(ll) + length(error_sr);
         end
     end
 end
 
-fprintf('number iterations designed = %f\n',iter(1)/100);
-fprintf('number iterations random = %f\n',iter(1)/cr(1));
-fprintf('time smoothing = %f\n',time_s(1)/100);
+fprintf('number iterations designed = %f for L = %f\n',iter(1)/prob_s(1),L(1));
+fprintf('number iterations random = %f for L = %f\n',iter_r(1)/prob_sr(1),L(1));
+fprintf('number iterations ptych = %f for L = %f\n',iter_s1(1)/prob_s1(1),L(1));
+fprintf('time smoothing = %f for L = %f\n',time_s(1)/prob_s(1),L(1));
 
 figure;
 plot(L,prob_s/100),title('Proposed'),...
