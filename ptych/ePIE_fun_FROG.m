@@ -1,5 +1,5 @@
 %% ePIE function for SHG FROG 
-function [Obj, error, Ir] = ePIE_fun_FROG(I,x0, D, iterMax, Fsupp, F, time, STOPc)
+function [Obj, error, Ir] = ePIE_fun_FROG(I,L,x0, D, iterMax, Fsupp, F, time, STOPc)
 % reconstructs a pulse function (in time) from a SHG FROG
 %   trace by use of the Ptychographic algorithm.
 %
@@ -29,6 +29,14 @@ if (~exist('STOPc', 'var')||isempty(STOPc))
     STOPc = 1e-5;
 end
 
+
+if L>1
+    aux = zeros(size(I,1),size(I,1));
+    for ii=1:size(I,1)
+        aux(ii,:) = interp1(1:L:size(I,1), I(ii,:), 1:size(I,1), 'pchip');
+    end
+    I = aux;
+end
 
 [N, K] = size(I);
 
