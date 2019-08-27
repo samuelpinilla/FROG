@@ -147,7 +147,7 @@ for ll=1:length(L)
         
         [z_p,~] = pytch_init(x,L(ll),SNR,ss);
         
-                [~,error_s1,~,~] = smoothing_solver(x,z_p,L(ll),SNR,ss);
+        [~,error_s1,~,~] = smoothing_solver(x,z_p,L(ll),SNR,ss);
         
         if min(error_s(error_s>0))<=1e-6
             prob_s(ll) = prob_s(ll) + 1;
@@ -158,7 +158,7 @@ for ll=1:length(L)
             prob_s1(ll) = prob_s1(ll) + 1;
             iter_s1(ll) = iter_s1(ll) + length(error_s1);
         end
-                
+        
         if min(error_sr(error_sr>0))<=1e-6
             prob_sr(ll) = prob_sr(ll) + 1;
             iter_r(ll)   = iter_r(ll) + length(error_sr);
@@ -174,6 +174,7 @@ fprintf('time smoothing = %f for L = %f\n',time_s(1)/prob_s(1),L(1));
 figure;
 plot(L,prob_s/100,L,prob_sr/100,L,prob_s1/100),title('Proposed'),...
     xlabel('L','FontSize',16); ylabel('success rate','FontSize',16);
+
 
 %% Fig. 6
 L   = 1:1:8;
