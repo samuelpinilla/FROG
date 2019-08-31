@@ -41,7 +41,7 @@ for t = 1:length(pp)
 end
 
 %% Fig. 2
-pp = [8,3];
+pp = [8,3,1];
 SNR = 20;
 figure;
 
@@ -63,10 +63,10 @@ for t = 1:length(pp)
     phase_ret_p = unwrap(phase_ret);
     
     
-    subplot(length(pp),2,length(pp)*(t-1)+1);
+    subplot(length(pp),2,2*(t-1)+1);
     plot(time*1e15,I_in,time*1e15,I_ret_s,time*1e15,I_ret_p),...
         title('Reconstructed magnitude'), xlabel('Time [fsec]','FontSize',16); ylabel('Amplitude','FontSize',16);
-    subplot(length(pp),2,length(pp)*(t-1)+2);
+    subplot(length(pp),2,2*(t-1)+2);
     plot(time*1e15,phase_in,time*1e15,phase_ret_s,...
         time*1e15,phase_ret_p), title('Reconstructed phase'),xlabel('Time [fsec]','FontSize',16); ylabel('Phase','FontSize',16);
 end
