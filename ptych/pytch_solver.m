@@ -50,7 +50,7 @@ function [ObjB,error] = pytch_solver(x,x0,L,SNR,ss)
     %%  Run algorithm
     for ni=1:1   % number of random realizations
         if alg==1
-            [Obj, error, Irec] = ePIE_fun_FROG(InoisyLPF,L,x0, D, 300, Fsupp, F', time, 1e-6);
+            [Obj, error, Irec] = ePIE_fun_FROG(InoisyLPF,L,x0, D, 300, Fsupp, F', time, 1e-6,ind_L,ss);
         else
             [Obj, error, Irec] = ePIE_fun_FROG_sp(InoisyLPF, D, 300, Fsupp, F', time, 1e-3, abs( fft(ref)/1 ));
         end
