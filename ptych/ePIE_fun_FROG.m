@@ -56,7 +56,7 @@ iter = 1;
 Ir = zeros(size(I));
 
 while iter <= iterMax
-    rng(5,ss.Type);
+    rng(ss.Seed-1,ss.Type);
     s = randperm(K);
     alpha = abs( 0.2+randn(1,1)/20 );
     for iterK =1:K
