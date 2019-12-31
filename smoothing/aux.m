@@ -11,6 +11,6 @@ function y = aux(x,L,N,fi)
     X    = fft(x);
 
     for ik=1:size(y,2)
-        y(:,ik) = ifft( X.*exp(1i*2*pi*D((fi(ik)-1)*L+1)*F) ) + ifft( X.*exp(-1i*2*pi*D((fi(ik)-1)*L+1)*F).*exp(1i*2*pi*D((fi(ik)-1)*L+1)*F(fi(ik))) );
+        y(:,ik) = ifft( X.*exp(1i*2*pi*D((fi(ik)-1)*L+1)*F) ) + ifft( X.*exp(-1i*2*pi*D((fi(ik)-1)*L+1)*F).*exp(1i*2*pi*D((fi(ik)-1)*L+1)*F) );
     end
 end
